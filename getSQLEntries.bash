@@ -14,7 +14,7 @@ TOTAL_ITEM=0
 
 
 for FILE in ${FILELIST[*]}; do
-    cat "$FILE"| nl -b a| grep -e '<insert ' -e '<insert>' -e '</insert>' -e '<select '  -e '<select>' -e '</select>' -e '<update ' -e '<update>' -e '</update>' | expand | tr -s " " > ~/sqlkeywords.txt
+    cat "$FILE"| nl -b a| grep -e '<insert ' -e '<insert>' -e '</insert>' -e '<select '  -e '<select>' -e '</select>' -e '<update ' -e '<update>' -e '</update>' -e '<delete>' -e '<delete ' -e '</delete>' | expand | tr -s " " > ~/sqlkeywords.txt
     LINENUMBERS=(`cat ~/sqlkeywords.txt | cut -d " " -f 2`)
     COUNT=0
     (( ITEMS= ${#LINENUMBERS[*]} / 2))
