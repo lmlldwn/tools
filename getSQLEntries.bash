@@ -14,8 +14,8 @@ TOTAL_ITEM=0
 
 
 for FILE in ${FILELIST[*]}; do
-    cat "$FILE"| nl -b a| grep -e '<insert ' -e '<insert>' -e '</insert>' -e '<select '  -e '<select>' -e '</select>' -e '<update ' -e '<update>' -e '</update>' -e '<delete>' -e '<delete ' -e '</delete>' | expand | tr -s " " > ~/sqlkeywords.txt
-    LINENUMBERS=(`cat ~/sqlkeywords.txt | cut -d " " -f 2`)
+    cat "$FILE"| nl -b a| grep -e '<insert ' -e '<insert>' -e '</insert>' -e '<select '  -e '<select>' -e '</select>' -e '<update ' -e '<update>' -e '</update>' -e '<delete>' -e '<delete ' -e '</delete>' | grep -v '<!--'| grep -v '\-\->' | expand | tr -s " " > ./sqlkeywords.txt
+    LINENUMBERS=(`cat ./sqlkeywords.txt | cut -d " " -f 2`)
     COUNT=0
     (( ITEMS= ${#LINENUMBERS[*]} / 2))
 
@@ -30,7 +30,7 @@ for FILE in ${FILELIST[*]}; do
             (( ENDLINEINDEX=$COUNT + 1 ))
             (( STARTLINE=${LINENUMBERS[$STARTLINEINDEX]} + 1 ))
             (( ENDLINE=${LINENUMBERS[$ENDLINEINDEX]} - 1 ))
-            QUERY=`tail -n "+$STARTLINE" $FILE | head -n "$((ENDLINE-STARTLINE+1))" | grep -v "CDATA" | grep -v "\]\]>" | sed 's/"/""/g' `
+            QUERY=`tail -n "+$STARTLINE" $FILE | head -n "$((ENDLINE-STARTLINE+1))" | grep -v "CDATA" | grep -v "\]\]>" | grep -v '<!--'| grep -v '\-\->' | sed 's/"/""/g' `
             FORMATTED_QUERY="\"${QUERY}\""
             # echo "==========               $TOTAL_ITEM               =========="                >> $OUTPUT_FILE
             # echo "==========               $ITEM               =========="                      >> $OUTPUT_FILE
@@ -42,5 +42,5 @@ for FILE in ${FILELIST[*]}; do
 done
 echo "Total Entries: $TOTAL_ITEM"
 echo "Output File: $OUTPUT_FILE"
-rm ~/sqlkeywords.txt
+rm ./sqlkeywords.txt
 exit 0
